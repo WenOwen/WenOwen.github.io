@@ -1,0 +1,41 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# dotenv environment variables file
+.env
+.env.*
+!.env.example
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# --- This workspace -------------------------------------------------------
+# Upstream reference clone (kept locally for study; contains its own .git and
+# the original author's copyrighted assets — must never be committed).
+reference/
+
+# Local tooling scratch
+.npm-cache/
+.research/
+
+# Legacy Sanity Studio (CMS removed — content now lives in src/content/).
+portfolio-itom/

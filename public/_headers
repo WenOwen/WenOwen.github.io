@@ -1,0 +1,36 @@
+# Cloudflare Pages preview deployments (`<project>.pages.dev`) stay out of search
+# results. Rename the host below if the Pages project is not called "wu5" - only
+# preview traffic should match this block, never the custom domain underneath.
+https://wu5.pages.dev/*
+  X-Robots-Tag: noindex
+
+https://wu5.dev/*
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=()
+
+# Cache static assets for 1 year (Performance & SEO Server Score)
+https://wu5.dev/*.js
+  Cache-Control: public, max-age=31536000, immutable
+
+https://wu5.dev/*.css
+  Cache-Control: public, max-age=31536000, immutable
+
+https://wu5.dev/*.webp
+  Cache-Control: public, max-age=31536000, immutable
+
+https://wu5.dev/*.png
+  Cache-Control: public, max-age=31536000, immutable
+
+https://wu5.dev/*.ktx2
+  Cache-Control: public, max-age=31536000, immutable
+
+https://wu5.dev/*.glb
+  Cache-Control: public, max-age=31536000, immutable
+
+https://wu5.dev/*.mp3
+  Cache-Control: public, max-age=31536000, immutable
+
+https://wu5.dev/fonts/*
+  Cache-Control: public, max-age=31536000, immutable
