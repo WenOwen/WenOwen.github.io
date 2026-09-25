@@ -68,8 +68,15 @@
     display: flex; gap: 18px; align-items: baseline; letter-spacing: .06em;
   }
   .hero .sub .cn { color: var(--ink); font-weight: 600; font-size: 15px; }
-  .hero-art { position: absolute; right: -30px; bottom: 53px; z-index: 0; }
-  .hero-art .personcat { width: 230px; display: block; }
+  /* right: 0 puts the art's ink on the text column's right edge. The previous
+     artwork carried ~8px of transparent margin on its right; this one runs the
+     ink to the very edge (x=1064 of 1065), so keeping the old -30px pull would
+     have clipped the trouser leg against the container. */
+  .hero-art { position: absolute; right: 0; bottom: 58.6px; z-index: 0; }
+  /* 268px: this artwork is slimmer than the previous one (16% narrower for the
+     same height), so it carried noticeably less visual weight next to the
+     enlarged wordmark and read as undersized. */
+  .hero-art .personcat { width: 268px; display: block; }
 
   /* ---------- tab nav ---------- */
   .tabs {
