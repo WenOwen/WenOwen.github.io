@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>wu5 hero — 5 的艺术处理方案对比</title>
+<style>
+  :root { --bg:#faf8f3; --ink:#1a1a1a; --ink-soft:#8a8578; --accent:#ffd94d; --line:#e8e4da; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--bg); color:var(--ink);
+    font-family:-apple-system,"PingFang SC","Noto Sans SC","Microsoft YaHei","Helvetica Neue",sans-serif;
+    background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);
+    background-size:48px 48px; padding:56px 40px 80px; }
+  h2 { font-size:15px; letter-spacing:.18em; color:var(--ink-soft); font-weight:600; margin:58px 0 6px; }
+  .why { font-size:13px; color:var(--ink-soft); line-height:1.7; margin-bottom:26px; max-width:640px; }
+  .why b { color:var(--ink); font-weight:600; }
+  .stage { position:relative; padding:26px 0 34px; }
+  .row { font-size:150px; line-height:.9; font-weight:800; letter-spacing:-.035em; }
+  sup, .mark { font-weight:800; letter-spacing:0; }
+
+  /* ---- A: 基线，5 略大，纯墨色 ---- */
+  .a sup { font-size:1.18em; vertical-align:baseline; position:relative; top:.04em; }
+
+  /* ---- B: 5 做描边（镂空）---- */
+  .b sup { font-size:1.18em; vertical-align:baseline; position:relative; top:.04em;
+    color:transparent; -webkit-text-stroke:3.5px var(--ink); }
+
+  /* ---- C: 5 坐黄色色块（用 inline-block + 行高约束，不让色块撑破行）---- */
+  .c sup { font-size:1.18em; vertical-align:baseline; position:relative; top:.04em;
+    display:inline-block; line-height:.82; color:var(--ink);
+    background:var(--accent); padding:.06em .10em .04em .07em; border-radius:6px; }
+
+  /* ---- D: 5 用黄色实心 ---- */
+  .d sup { font-size:1.18em; vertical-align:baseline; position:relative; top:.04em; color:var(--accent); }
+
+  /* ---- E: 5 描边 + 黄色偏移投影 ---- */
+  .e sup { font-size:1.18em; vertical-align:baseline; position:relative; top:.04em;
+    color:var(--ink); text-shadow:.09em .09em 0 var(--accent); }
+
+  .note { font-size:12px; color:var(--ink-soft); font-family:ui-monospace,monospace; letter-spacing:.02em; }
+  .divider { height:1px; background:var(--line); margin:44px 0 0; }
+</style>
+</head>
+<body>
+
+<h2>方案 A · 基线（当前已落地）</h2>
+<p class="why">5 与 wu 平排、基線对齐、同墨色，1.18 倍。不添加任何装饰——<b>靠纯粹的字号对比表达"更大的 5"</b>。最克制，但也最容易被读成普通字符串 "wu5"。</p>
+<div class="stage"><div class="row a">wu<sup>5</sup></div></div>
+<p class="note">.hero h1 sup { font-size:1.18em; vertical-align:baseline; top:.04em; }</p>
+
+<div class="divider"></div>
+<h2>方案 B · 5 做描边镂空</h2>
+<p class="why">5 只有 <b>3.5px 墨色轮廓、内部镂空</b>。和实心的 wu 形成"实—虚"对比，5 显得更轻更精致，视觉重心自然落到 5 上。这是最"高级"的处理，接近时尚品牌的字标手法。</p>
+<div class="stage"><div class="row b">wu<sup>5</sup></div></div>
+<p class="note">color:transparent; -webkit-text-stroke:3.5px var(--ink);</p>
+
+<div class="divider"></div>
+<h2>方案 C · 5 坐黄色色块</h2>
+<p class="why">5 背后垫 <b>--accent 黄色块</b>（站点唯一的强调色，tab 选中态和链接 hover 都在用它）。让 5 成为整页唯一的高饱和焦点，和已有视觉语汇完全同源。</p>
+<div class="stage"><div class="row c">wu<sup>5</sup></div></div>
+<p class="note">background:var(--accent); border-radius:6px; padding:0 .12em .06em</p>
+
+<div class="divider"></div>
+<h2>方案 D · 5 用黄色实心</h2>
+<p class="why">5 直接填 <b>--accent 黄色</b>，wu 保持墨色。极简、只改一个颜色属性。但在浅米底上黄色对比度偏低（约 1.5:1），远看会糊。</p>
+<div class="stage"><div class="row d">wu<sup>5</sup></div></div>
+<p class="note">color:var(--accent);</p>
+
+<div class="divider"></div>
+<h2>方案 E · 描边 + 黄色偏移投影</h2>
+<p class="why">5 保持墨色，但向右下偏移一层 <b>黄色实心影子</b>。有印刷感/手工感，和插图的软调性接近。缺点是阴影会侵占右边的空白，需留够间距。</p>
+<div class="stage"><div class="row e">wu<sup>5</sup></div></div>
+<p class="note">text-shadow:.09em .09em 0 var(--accent);</p>
+
+</body>
+</html>
