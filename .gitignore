@@ -1,41 +1,20 @@
-# Logs
-logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
-
-node_modules
-dist
-dist-ssr
-*.local
-
-# dotenv environment variables file
-.env
-.env.*
-!.env.example
-
-# Editor directories and files
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea
 .vscode/*
 !.vscode/extensions.json
-.idea
-.DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
 *.sw?
 
-# --- This workspace -------------------------------------------------------
-# Upstream reference clone (kept locally for study; contains its own .git and
-# the original author's copyrighted assets — must never be committed).
-reference/
+# 发布 gh-pages 用的临时 worktree
+.deploy-gh-pages/
 
-# Local tooling scratch
-.npm-cache/
-.research/
-
-# Legacy Sanity Studio (CMS removed — content now lives in src/content/).
-portfolio-itom/
+# 本地草稿与缓存（仓库现在只是静态站点 + 原画，不需要构建产物）
+node_modules
+.npm-cache
+dist
+.research
+reference
+*.local
+logs
+*.log
