@@ -52,7 +52,16 @@
     line-height: .9; font-weight: 800; letter-spacing: -.035em;
     position: relative; z-index: 1;
   }
-  .hero h1 sup { font-size: .18em; font-weight: 400; letter-spacing: 0; }
+  .hero h1 sup {
+    /* The "5" is part of the wordmark (wu⁵ reads 吾五), not a footnote marker.
+       Set on wu's baseline at 1.18x and outlined rather than filled, so the
+       solid wu / hollow 5 pairing makes the numeral the focal glyph without
+       adding a colour the page doesn't already use. */
+    font-size: 1.18em; font-weight: 800; letter-spacing: 0;
+    vertical-align: baseline; position: relative; top: .04em;
+    color: transparent; -webkit-text-stroke: .018em var(--ink);
+    paint-order: stroke fill;
+  }
   .hero h1 .verb { display: inline-block; }
   .hero .sub {
     margin-top: 40px; font-size: 14px; color: var(--ink-soft);
