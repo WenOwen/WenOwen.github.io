@@ -145,10 +145,48 @@
   .progress .bar { width: 1px; height: 90px; background: var(--line); position: relative; }
   .progress .bar i { position: absolute; top: 0; left: 0; right: 0; background: var(--ink); display: block; }
 
+  /* ---------- mobile ---------- */
+  /* The only breakpoint the page needs. Everything below 640px used to overflow:
+     the gh link was clipped mid-word and the subtitle's English line ran past the
+     right edge, because .wrap keeps a fixed 760px max-width and .sub a fixed
+     18px gap with no shrink strategy. */
   @media (max-width: 640px) {
-    .hero-art { position: static; margin-top: 30px; justify-content: flex-end; }
-    .tabs { font-size: 17px; gap: 20px; overflow-x: auto; }
-    .card { padding: 26px 24px 46px; }
+    .wrap { padding: 0 20px; }
+
+    /* Top bar: brand stays put, the long URL shrinks and ellipsises instead of
+       being clipped. min-width:0 on the flex item is what actually lets the
+       ellipsis engage — without it a flex item refuses to shrink below content. */
+    .topbar { gap: 12px; }
+    .brand { flex: 0 0 auto; }
+    .ghlink {
+      flex: 1 1 auto; min-width: 0;
+      font-size: 12px; text-align: right;
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+
+    .hero { padding: 72px 0 0; }
+    .hero h1 { font-size: clamp(64px, 19vw, 112px); }
+
+    /* The subtitle stacks: 吾五 keeps its own line, the long role string wraps
+       beneath it, and the CJK label never breaks mid-word again. */
+    .hero .sub { flex-direction: column; gap: 6px; margin-top: 26px; }
+    .hero .sub .cn { white-space: nowrap; }
+    .hero .sub span:nth-child(2) { line-height: 1.5; }
+
+    /* Art returns to flow under the type. The desktop rule pulls it 30px past
+       the right edge (right: -30px); at this width that pushed the figure off
+       screen, so it is reset to sit flush with the text column. */
+    .hero-art {
+      position: static; right: auto;
+      margin: 30px 0 0; display: flex; justify-content: flex-end;
+    }
+    .hero-art .personcat { width: min(230px, 62vw); }
+
+    /* The role string is long; allow it to break rather than overflow. */
+    .hero .sub span:nth-child(2) { overflow-wrap: anywhere; }
+
+    .tabs { font-size: 17px; gap: 22px; overflow-x: auto; }
+    .card { padding: 26px 22px 40px; }
     .progress { display: none; }
   }
 </style>
