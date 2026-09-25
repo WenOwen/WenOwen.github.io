@@ -490,12 +490,32 @@ const EntranceDoors = ({
 
     // --- Mouse Swinging Animation ---
     const mousePivotRef = useRef();
+    const mouseSwing = useRef(0); // click-triggered extra swing amplitude
+
+    // Mouse click: give it a big push, swing decays back to the gentle idle
+    const handleMouseClick = (e) => {
+        e.stopPropagation();
+        gsap.killTweensOf(mouseSwing);
+        mouseSwing.current = 0.9;
+        gsap.to(mouseSwing, { current: 0, duration: 3, ease: 'power2.out' });
+    };
+
+    // Cat click: squash & stretch bounce
+    const handleCatClick = (e) => {
+        e.stopPropagation();
+        const g = catGroupRef.current;
+        if (!g || gsap.isTweening(g.scale)) return;
+        gsap.timeline()
+            .to(g.scale, { x: 1.15, y: 0.8, duration: 0.12, ease: 'power2.out' })
+            .to(g.scale, { x: 0.92, y: 1.15, duration: 0.16, ease: 'power2.inOut' })
+            .to(g.scale, { x: 1, y: 1, duration: 0.7, ease: 'elastic.out(1, 0.35)' });
+    };
     useFrame(({ clock }) => {
         if (mousePivotRef.current) {
-            // Gentle swing: sin wave
-            // Amplitude: 0.05 radians (approx 3 degrees)
-            // Speed: 1.5
-            mousePivotRef.current.rotation.x = Math.sin(clock.elapsedTime * 1.5) * 0.05;
+            // Gentle idle swing + click-triggered big swing (decays via mouseSwing)
+            mousePivotRef.current.rotation.x = Math.sin(clock.elapsedTime * 1.5) * 0.05
+                + Math.sin(clock.elapsedTime * 7) * mouseSwing.current;
+            mousePivotRef.current.rotation.z = Math.sin(clock.elapsedTime * 5.3) * mouseSwing.current * 0.7;
         }
 
         // --- Bug Animation ---
@@ -947,8 +967,8 @@ const EntranceDoors = ({
 
 
 
-            {/* TREE & MOUSE (Left Side) */}
-            <group position={[-2.9, floorY + 2.7, 1]}>
+            {/* TREE & MOUSE (Left Side) — scaled 0.65 so the whole tree fits in view */}
+            <group position={[-2.9, floorY + 2.0, 1]} scale={[0.65, 0.65, 0.65]}>
                 {/* Tree */}
                 <mesh position={[0, 0, 0]}>
                     <planeGeometry args={[6, 8]} />
@@ -959,16 +979,15 @@ const EntranceDoors = ({
                         depthWrite={false}
                     />
                 </mesh>
-                {/* Mouse Hanging - Pivot Group for swinging */}
-                {/* Pivot is moved UP by ~2.0 to be near the top of the string/branch */}
-                {/* Original Mesh Y was 0.02. New Pivot Y is 0.02 + 2.0 = 2.02 */}
-                {/* Mouse Hanging - Pivot Group for swinging */}
-                {/* Pivot: 421, 597px. Offset relative to center: X=0.351, Y=-0.456 */}
-                {/* Group Position shift: (-0.01, 0.02) + (0.351, -0.456) = (0.341, -0.436) */}
-                <group ref={mousePivotRef} position={[0.341, 0.02 - 0.456, 0]}>
-                    {/* Mesh moves opposite to pivot offset to keep visual position */}
-                    <mesh position={[-0.351, 0.456, 0]}>
-                        <planeGeometry args={[6, 8]} />
+                {/* Mouse Hanging (below the tree) - click to swing */}
+                <group ref={mousePivotRef} position={[0.35, -0.5, 0.01]}>
+                    <mesh
+                        position={[0, -1.06, 0]}
+                        onClick={handleMouseClick}
+                        onPointerEnter={() => { document.body.style.cursor = "pointer"; }}
+                        onPointerLeave={() => { document.body.style.cursor = "auto"; }}
+                    >
+                        <planeGeometry args={[0.69, 2.12]} />
                         <meshBasicMaterial color="#e0e0e0"
                             map={mouseTexture}
                             transparent={true}
@@ -979,8 +998,12 @@ const EntranceDoors = ({
                 </group>
             </group>
 
-            {/* CAT SKETCH (Front Facing) */}
-            <group position={[-1.5, floorY + 0.6, 0.8]} ref={catGroupRef}>
+            {/* CAT SKETCH (Front Facing) - click for squash & stretch bounce */}
+            <group position={[-1.5, floorY + 0.6, 0.8]} ref={catGroupRef}
+                onClick={handleCatClick}
+                onPointerEnter={() => { document.body.style.cursor = "pointer"; }}
+                onPointerLeave={() => { document.body.style.cursor = "auto"; }}
+            >
                 {/* Body */}
                 <mesh>
                     <planeGeometry args={[1.5, 1.5]} />

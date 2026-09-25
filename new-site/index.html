@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WU5® — 吾五</title>
+<meta name="description" content="吾五 (WU5) — AI Engineer / Creative Developer。做点东西。">
+<style>
+  :root {
+    --bg: #faf8f3;
+    --ink: #1a1a1a;
+    --ink-soft: #8a8578;
+    --accent: #ffd94d;
+    --card: #ffffff;
+    --line: #e8e4da;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, "PingFang SC", "Noto Sans SC", "Microsoft YaHei", "Helvetica Neue", sans-serif;
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size: 48px 48px;
+    background-position: center top;
+    min-height: 100vh;
+  }
+  ::selection { background: var(--accent); }
+
+  .wrap { max-width: 760px; margin: 0 auto; padding: 0 28px; }
+
+  /* ---------- top bar ---------- */
+  .topbar {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 26px 0; font-size: 13px; letter-spacing: .04em;
+  }
+  .brand { font-weight: 600; color: var(--ink-soft); }
+  .brand sup { font-size: 9px; }
+  .ghlink { color: var(--ink-soft); text-decoration: none; font-family: ui-monospace, monospace; }
+  .ghlink:hover { color: var(--ink); }
+
+  /* ---------- hero ---------- */
+  .hero { position: relative; padding: 110px 0 80px; }
+  .hero h1 {
+    font-size: clamp(64px, 11vw, 118px);
+    line-height: .98; font-weight: 800; letter-spacing: -.03em;
+    position: relative; z-index: 1;
+  }
+  .hero h1 sup { font-size: .18em; font-weight: 400; }
+  .hero .sub {
+    margin-top: 34px; font-size: 14px; color: var(--ink-soft);
+    display: flex; gap: 18px; align-items: baseline; letter-spacing: .06em;
+  }
+  .hero .sub .cn { color: var(--ink); font-weight: 600; font-size: 15px; }
+  .hero-art { position: absolute; right: -10px; bottom: 30px; display: flex; align-items: flex-end; gap: 6px; z-index: 0; }
+  .hero-art .person { width: 150px; }
+  .hero-art .cat { width: 95px; }
+
+  /* ---------- tab nav ---------- */
+  .tabs {
+    position: sticky; top: 0; z-index: 10;
+    background: color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter: blur(8px);
+    padding: 18px 0; margin-top: 20px;
+    display: flex; gap: 30px; font-size: 21px; font-weight: 700;
+  }
+  .tabs button {
+    background: none; border: none; cursor: pointer; padding: 0;
+    font: inherit; color: #c9c4b4; transition: color .2s;
+  }
+  .tabs button:hover { color: var(--ink); }
+  .tabs button.active { color: var(--ink); box-shadow: inset 0 -0.45em 0 var(--accent); }
+
+  /* ---------- panels ---------- */
+  .panel { display: none; padding: 44px 0 30px; }
+  .panel.on { display: block; animation: fadeUp .45s ease both; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+
+  /* ---------- cards ---------- */
+  .cards { display: flex; flex-direction: column; gap: 22px; }
+  .card {
+    background: var(--card); border-radius: 18px;
+    padding: 38px 44px 52px; position: relative;
+    box-shadow: 0 1px 3px rgba(30,25,15,.05), 0 10px 34px rgba(30,25,15,.05);
+  }
+  .card .idx {
+    position: absolute; left: 24px; bottom: 6px;
+    font-size: 42px; font-weight: 800; color: #f0ede3; user-select: none;
+  }
+  .card .emoji { font-size: 28px; margin-right: 8px; }
+  .card h3 { font-size: 26px; font-weight: 800; letter-spacing: -.01em; display: flex; align-items: center; }
+  .card h3 .stars { margin-left: auto; font-size: 13px; font-weight: 500; color: var(--ink-soft); }
+  .card p { margin-top: 10px; font-size: 14.5px; line-height: 1.75; color: #6b675c; }
+  .card a { display: inline-block; margin-top: 14px; font-size: 13.5px; color: var(--ink-soft); text-decoration: none; }
+  .card a:hover { color: var(--ink); }
+
+  /* ---------- elsewhere ---------- */
+  .label {
+    font-size: 13px; letter-spacing: .28em; color: var(--ink-soft);
+    display: flex; align-items: center; gap: 14px; margin-bottom: 20px;
+  }
+  .label::before { content: ""; width: 26px; height: 1px; background: var(--ink); }
+  .links { list-style: none; }
+  .links li { border-bottom: 1px solid var(--line); }
+  .links li:first-child { border-top: 1px solid var(--line); }
+  .links .num { font-size: 12px; color: var(--ink-soft); font-family: ui-monospace, monospace; }
+  .links .ico { font-size: 20px; width: 30px; text-align: center; }
+  .links .name { font-size: 25px; font-weight: 800; }
+  .links .handle { margin-left: auto; font-size: 13px; color: var(--ink-soft); font-family: ui-monospace, monospace; }
+  .links a { text-decoration: none; color: inherit; display: flex; align-items: baseline; gap: 18px; padding: 26px 4px; }
+  .links a:hover .name { box-shadow: inset 0 -0.35em 0 var(--accent); }
+
+  .bio { font-size: 15.5px; line-height: 2.1; color: #55524a; max-width: 36em; }
+  .bio strong { color: var(--ink); }
+  .bio + .bio { margin-top: 1em; }
+
+  .empty { color: var(--ink-soft); font-size: 14.5px; line-height: 2; padding: 30px 0; }
+  .empty a { color: var(--ink); }
+
+  footer { padding: 50px 0 46px; font-size: 13px; color: var(--ink-soft); }
+  footer sup { font-size: 9px; }
+
+  /* ---------- scroll progress ---------- */
+  .progress {
+    position: fixed; left: 26px; top: 50%; transform: translateY(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: 10px;
+    color: var(--ink-soft); font-size: 11px; font-family: ui-monospace, monospace;
+    z-index: 20;
+  }
+  .progress .bar { width: 1px; height: 90px; background: var(--line); position: relative; }
+  .progress .bar i { position: absolute; top: 0; left: 0; right: 0; background: var(--ink); display: block; }
+
+  @media (max-width: 640px) {
+    .hero-art { position: static; margin-top: 30px; justify-content: flex-end; }
+    .tabs { font-size: 17px; gap: 20px; overflow-x: auto; }
+    .card { padding: 26px 24px 46px; }
+    .progress { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="progress"><span id="pct">00</span><div class="bar"><i id="bar"></i></div></div>
+
+<div class="wrap">
+
+  <header class="topbar">
+    <div class="brand">w WU5<sup>®</sup></div>
+    <a class="ghlink" href="https://github.com/WenOwen" target="_blank" rel="noopener">⌥ github.com/WenOwen</a>
+  </header>
+
+  <section class="hero">
+    <h1>Wu<sup>5</sup><br>makes<br>things.</h1>
+    <div class="sub">
+      <span class="cn">吾 五</span>
+      <span>AI ENGINEER / CREATIVE DEVELOPER / OPEN-SOURCE</span>
+    </div>
+    <div class="hero-art">
+      <img class="person" src="assets/hero-person.png" alt="吾五的头像">
+      <img class="cat" src="assets/hero-cat.png" alt="猫">
+    </div>
+  </section>
+
+  <nav class="tabs" role="tablist">
+    <button class="active" data-panel="projects" role="tab">项目</button>
+    <button data-panel="skills" role="tab">Skills</button>
+    <button data-panel="articles" role="tab">文章</button>
+    <button data-panel="about" role="tab">关于我</button>
+    <button data-panel="contact" role="tab">交流</button>
+  </nav>
+
+  <!-- ============ 项目 ============ -->
+  <section class="panel on" id="panel-projects">
+    <div class="cards">
+      <div class="card">
+        <h3><span class="emoji">🔄</span> WU5 Dev Flow <span class="stars">★ 17</span></h3>
+        <p>可审计的 SDD + 严格 TDD + 安全 Git 工作流，打包成 Codex / Python 项目可复用的技能包，规范先行、检查点可回滚。</p>
+        <a href="https://github.com/WenOwen/wu5-dev-flow" target="_blank" rel="noopener">查看仓库 →</a>
+        <div class="idx">01</div>
+      </div>
+      <div class="card">
+        <h3><span class="emoji">🏢</span> Yongxu</h3>
+        <p>AI 公司操作系统骨架：组织结构、Agent 角色、任务路由、治理与进化循环，全部建模为一等原语。</p>
+        <a href="https://github.com/WenOwen/yongxu" target="_blank" rel="noopener">查看仓库 →</a>
+        <div class="idx">02</div>
+      </div>
+      <div class="card">
+        <h3><span class="emoji">🌀</span> DeepDelta Aero</h3>
+        <p>深度差值学习做气动预测：用神经代理模型预测轴流压气机叶片性能，替代全量 CFD 扫描。</p>
+        <a href="https://github.com/WenOwen/DeepDelta-Aero" target="_blank" rel="noopener">查看仓库 →</a>
+        <div class="idx">03</div>
+      </div>
+      <div class="card">
+        <h3><span class="emoji">🧩</span> Entropy Skills</h3>
+        <p>诊断本地 Agent Skills 集合的路由冲突、能力重叠与维护熵，报告该合并、拆分还是退役。</p>
+        <a href="https://github.com/WenOwen/entropy-skills" target="_blank" rel="noopener">查看仓库 →</a>
+        <div class="idx">04</div>
+      </div>
+      <div class="card">
+        <h3><span class="emoji">📮</span> WU5 Dukou</h3>
+        <p>安全的 Markdown 草稿分发工具：排版并发布到微信公众号、抖音、B 站，不泄露未发布草稿。</p>
+        <a href="https://github.com/WenOwen/wu5-dukou" target="_blank" rel="noopener">查看仓库 →</a>
+        <div class="idx">05</div>
+      </div>
+      <div class="card">
+        <h3><span class="emoji">🌐</span> Translate</h3>
+        <p>一键英译中的 Chrome 阅读扩展，读英文技术文档时原地翻译，不打扰阅读流。</p>
+        <a href="https://github.com/WenOwen/chrome-translate-extension" target="_blank" rel="noopener">查看仓库 →</a>
+        <div class="idx">06</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ Skills ============ -->
+  <section class="panel" id="panel-skills">
+    <div class="label">我做的 AGENT SKILLS</div>
+    <div class="cards">
+      <div class="card">
+        <h3><span class="emoji">🔄</span> wu5-dev-flow <span class="stars">★ 17</span></h3>
+        <p>可审计的 SDD + 严格 TDD + 安全 Git 工作流技能，适用于 Codex 与 Python 项目。</p>
+        <a href="https://github.com/WenOwen/wu5-dev-flow" target="_blank" rel="noopener">github.com/WenOwen/wu5-dev-flow →</a>
+        <div class="idx">01</div>
+      </div>
+      <div class="card">
+        <h3><span class="emoji">🎨</span> huashu-design</h3>
+        <p>Claude Code 里的 HTML 原生设计技能：高保真原型 / 幻灯片 / 动画 + 20 条设计哲学 + 5 维评审 + MP4 导出。</p>
+        <a href="https://github.com/WenOwen/huashu-design" target="_blank" rel="noopener">github.com/WenOwen/huashu-design →</a>
+        <div class="idx">02</div>
+      </div>
+      <div class="card">
+        <h3><span class="emoji">🧩</span> entropy-skills</h3>
+        <p>诊断本地 Agent Skills 的路由冲突、能力结构与维护熵，给出合并 / 拆分 / 退役建议。</p>
+        <a href="https://github.com/WenOwen/entropy-skills" target="_blank" rel="noopener">github.com/WenOwen/entropy-skills →</a>
+        <div class="idx">03</div>
+      </div>
+      <div class="card">
+        <h3><span class="emoji">📮</span> wu5-dukou</h3>
+        <p>安全的 Markdown 草稿分发技能，一键排版发布到微信公众号、抖音、B 站。</p>
+        <a href="https://github.com/WenOwen/wu5-dukou" target="_blank" rel="noopener">github.com/WenOwen/wu5-dukou →</a>
+        <div class="idx">04</div>
+      </div>
+      <div class="card">
+        <h3><span class="emoji">📝</span> wu5-research</h3>
+        <p>端到端 ML/AI 研究论文写作流水线技能，为 Hermes Agent 设计。</p>
+        <a href="https://github.com/WenOwen/wu5-research" target="_blank" rel="noopener">github.com/WenOwen/wu5-research →</a>
+        <div class="idx">05</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 文章 ============ -->
+  <section class="panel" id="panel-articles">
+    <div class="label">文章 / WRITING</div>
+    <div class="empty">
+      还在酝酿中。先去 <a href="https://github.com/WenOwen?tab=repositories" target="_blank" rel="noopener">GitHub 仓库</a> 看看我的 README 吧 →
+    </div>
+  </section>
+
+  <!-- ============ 关于我 ============ -->
+  <section class="panel" id="panel-about">
+    <div class="label">关于我 / ABOUT</div>
+    <div class="bio">
+      <strong>吾五（WU5）</strong>，AI Engineer / Creative Developer，现居中国。
+    </div>
+    <div class="bio">
+      关注 AI 工程化、Agent 系统与研究工具链。喜欢把重复的工作流做成可复用的技能包——
+      写代码如此，写作如此，做研究也如此。
+    </div>
+    <div class="bio">
+      业余做开源，偶尔写点东西。正在折腾的方向：深度差值学习 × 叶轮机械气动。
+    </div>
+  </section>
+
+  <!-- ============ 交流 ============ -->
+  <section class="panel" id="panel-contact">
+    <div class="label">联系 / ELSEWHERE</div>
+    <ul class="links">
+      <li><a href="https://github.com/WenOwen" target="_blank" rel="noopener"><span class="ico">🐙</span><span class="num">01</span><span class="name">GitHub</span><span class="handle">@WenOwen</span></a></li>
+      <li><a href="mailto:3538166@qq.com"><span class="ico">✉️</span><span class="num">02</span><span class="name">Email</span><span class="handle">3538166@qq.com</span></a></li>
+      <li><a href="https://x.com/" target="_blank" rel="noopener"><span class="ico">𝕏</span><span class="num">03</span><span class="name">X</span><span class="handle">@wenowen</span></a></li>
+      <li><a href="https://www.linkedin.com/" target="_blank" rel="noopener"><span class="ico">💼</span><span class="num">04</span><span class="name">LinkedIn</span><span class="handle">WenOwen</span></a></li>
+      <li><a href="https://github.com/WenOwen?tab=repositories" target="_blank" rel="noopener"><span class="ico">✎</span><span class="num">05</span><span class="name">Blog</span><span class="handle">notes &amp; repos</span></a></li>
+    </ul>
+  </section>
+
+  <footer>© 2026 WU5<sup>®</sup></footer>
+
+</div>
+
+<script>
+  // tab switching (oil-style: swap panel in place)
+  const tabs = [...document.querySelectorAll('.tabs button')];
+  const panels = Object.fromEntries(
+    ['projects', 'skills', 'articles', 'about', 'contact'].map((k) => [k, document.getElementById('panel-' + k)])
+  );
+  tabs.forEach((t) => t.addEventListener('click', () => {
+    tabs.forEach((x) => x.classList.toggle('active', x === t));
+    Object.entries(panels).forEach(([k, p]) => p.classList.toggle('on', k === t.dataset.panel));
+    // re-trigger entrance animation
+    const p = panels[t.dataset.panel];
+    p.style.animation = 'none'; void p.offsetWidth; p.style.animation = '';
+  }));
+
+  // scroll progress
+  const bar = document.getElementById('bar');
+  const pct = document.getElementById('pct');
+  addEventListener('scroll', () => {
+    const h = document.body.scrollHeight - innerHeight;
+    const p = h > 0 ? Math.min(1, scrollY / h) : 0;
+    bar.style.height = (p * 100) + '%';
+    pct.textContent = String(Math.round(p * 100)).padStart(2, '0');
+  }, { passive: true });
+</script>
+</body>
+</html>

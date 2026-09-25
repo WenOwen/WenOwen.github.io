@@ -209,8 +209,10 @@ add(`${D}/door_back.webp`, `${D}/door_back.webp`, (W, H, r) => P.doorFace(r, W, 
 add(`${D}/door_back_left_sketch.webp`, `${D}/door_back_left_sketch.webp`, (W, H, r) => P.doorFace(r, W, H, {}));
 add(`${D}/door_left_sketch.webp`, `${D}/door_left_sketch.webp`, (W, H, r) => P.doorFace(r, W, H, {}));
 add(`${D}/door_right_sketch.webp`, `${D}/door_right_sketch.webp`, (W, H, r) => P.doorFace(r, W, H, {}));
-pair(`${D}/door_left_painted.webp`, `${D}/door_left_sketch.webp`, (W, H, r, painted) => P.doorFace(r, W, H, { painted }));
-pair(`${D}/door_right_painted.webp`, `${D}/door_right_sketch.webp`, (W, H, r, painted) => P.doorFace(r, W, H, { painted }));
+// Painted leaves are their own files — `pair()` here would also emit a stray
+// `door_left_painted_painted.webp` that nothing loads.
+add(`${D}/door_left_painted.webp`, `${D}/door_left_sketch.webp`, (W, H, r) => P.doorFace(r, W, H, { painted: true }));
+add(`${D}/door_right_painted.webp`, `${D}/door_right_sketch.webp`, (W, H, r) => P.doorFace(r, W, H, { painted: true }));
 add(`${D}/frame_sketch.webp`, `${D}/frame_sketch.webp`, (W, H, r) => {
   const b = P.frameBars(r, W * 0.05, H * 0.04, W * 0.9, H * 0.92, W * 0.09, { stroke: 4 })
     + P.frameBars(r, W * 0.16, H * 0.11, W * 0.68, H * 0.78, W * 0.035, { stroke: 2.6, color: INK_SOFT });
@@ -227,18 +229,26 @@ add(`${D}/pien.webp`, `${D}/pien.webp`, (W, H, r) => {
   b += P.line(r, W * 0.7, 0, W * 0.7, H, { stroke: 3 });
   return svgDoc(W, H, b, { bg: PAPER_DIM });
 });
-pair(`${D}/handle_left_sketch.webp`, `${D}/handle_left_sketch.webp`, (W, H, r, painted) => {
-  let b = P.ellipse(r, W * 0.5, H * 0.3, W * 0.2, W * 0.2, { stroke: 3.6 });
-  b += P.rect(r, W * 0.38, H * 0.34, W * 0.24, H * 0.14, { stroke: 3.4, radius: W * 0.08 });
-  if (painted) b += P.hatch(r, W * 0.4, H * 0.26, W * 0.2, H * 0.2, { gap: 12, opacity: 0.3, stroke: 1.5, ellipse: { cx: W * 0.5, cy: H * 0.3, rx: W * 0.19, ry: W * 0.19 } });
+// The scene asks for `handle_left_sketch` (outline) and `handle_left_painted`
+// (shaded) as SEPARATE files — a `pair()` here would emit `_sketch_painted`,
+// which nothing loads, and would leave `handle_left_painted` pointing at the
+// upstream asset.
+const handleArt = (side) => (W, H, r, painted) => {
+  const cy = side === 'left' ? H * 0.3 : H * 0.7;
+  let b = P.ellipse(r, W * 0.5, cy, W * 0.2, W * 0.2, { stroke: 3.6 });
+  b += P.rect(r, W * 0.38, cy + H * 0.04, W * 0.24, H * 0.14, { stroke: 3.4, radius: W * 0.08 });
+  if (painted) {
+    b += P.hatch(r, W * 0.4, cy - H * 0.04, W * 0.2, H * 0.2, {
+      gap: 12, opacity: 0.3, stroke: 1.5,
+      ellipse: { cx: W * 0.5, cy, rx: W * 0.19, ry: W * 0.19 },
+    });
+  }
   return svgDoc(W, H, b, { bg: PAPER });
-});
-pair(`${D}/handle_right_sketch.webp`, `${D}/handle_right_sketch.webp`, (W, H, r, painted) => {
-  let b = P.ellipse(r, W * 0.5, H * 0.7, W * 0.2, W * 0.2, { stroke: 3.6 });
-  b += P.rect(r, W * 0.38, H * 0.52, W * 0.24, H * 0.14, { stroke: 3.4, radius: W * 0.08 });
-  if (painted) b += P.hatch(r, W * 0.4, H * 0.66, W * 0.2, H * 0.2, { gap: 12, opacity: 0.3, stroke: 1.5, ellipse: { cx: W * 0.5, cy: H * 0.7, rx: W * 0.19, ry: W * 0.19 } });
-  return svgDoc(W, H, b, { bg: PAPER });
-});
+};
+add(`${D}/handle_left_sketch.webp`, `${D}/handle_left_sketch.webp`, (W, H, r) => handleArt('left')(W, H, r, false));
+add(`${D}/handle_left_painted.webp`, `${D}/handle_left_sketch.webp`, (W, H, r) => handleArt('left')(W, H, r, true));
+add(`${D}/handle_right_sketch.webp`, `${D}/handle_right_sketch.webp`, (W, H, r) => handleArt('right')(W, H, r, false));
+add(`${D}/handle_right_painted.webp`, `${D}/handle_right_sketch.webp`, (W, H, r) => handleArt('right')(W, H, r, true));
 
 /* ================================================================== *
  * gallery/
@@ -390,7 +400,11 @@ const FACE_SRC = {
   phone: `${S}/phone_front.webp`,
 };
 for (const [kind, src] of Object.entries(FACE_SRC)) {
-  const faces = kind === 'phone' ? ['front', 'back', 'side'] : ['front', 'back', 'left', 'right', 'top', 'bottom'];
+  // `side` is needed for the phone (phone_side) AND the TV (tv_side) — the TV
+  // variant used to ship as an upstream asset that we must not reuse.
+  const faces = kind === 'phone'
+    ? ['front', 'back', 'side']
+    : ['front', 'back', 'left', 'right', 'side', 'top', 'bottom'];
   for (const face of faces) {
     pair(`${S}/${kind}_${face}.webp`, null, (W, H, r, painted) => P.boxFace(r, W, H, { face, kind, painted }), { w: 1024, h: 1024 });
   }
