@@ -46,9 +46,10 @@
      The art is anchored to the .sub baseline, so 81px holds at any viewport. */
   .hero { position: relative; padding: 118px 0 80px; }
   .hero h1 {
-    /* 172px cap: 'thinks' then measures 519px, clearing the artwork's left edge
-       (532px inside .wrap) with room to spare, so the line never collides. */
-    font-size: clamp(72px, 12.6vw, 160px);
+    /* Cap 120px: 160 was heavy at desktop widths and 'thinks' ran into the
+       kitten's '?' bubble at the artwork's left edge. Scaling the whole clamp
+       by 0.75 keeps the fluid behaviour while clearing the art. */
+    font-size: clamp(54px, 9.45vw, 120px);
     line-height: .9; font-weight: 800; letter-spacing: -.035em;
     position: relative; z-index: 1;
   }
